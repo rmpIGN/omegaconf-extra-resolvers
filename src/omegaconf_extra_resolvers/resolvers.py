@@ -72,7 +72,7 @@ def oc_pad(
     return OmegaConf.create(padded_list)
 
 
-def oc_lpad(value: Any, pad_value: Any, new_length: int) -> list[Any]:
+def oc_lpad(value: Any, pad_value: Any, new_length: int) -> ListConfig:
     """Pad a sequence-like value on the left.
 
     Parameters
@@ -93,7 +93,7 @@ def oc_lpad(value: Any, pad_value: Any, new_length: int) -> list[Any]:
     return oc_pad(value, pad_value, new_length, "left")
 
 
-def oc_rpad(value: Any, pad_value: Any, new_length: int) -> list[Any]:
+def oc_rpad(value: Any, pad_value: Any, new_length: int) -> ListConfig:
     """Pad a sequence-like value on the right.
 
     Parameters
