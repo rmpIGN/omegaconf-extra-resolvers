@@ -2,10 +2,20 @@
 
 A small Python package that registers additional custom resolvers for [OmegaConf](https://omegaconf.readthedocs.io/).
 
+**WARNING: This package is recent. The API may change significantly in the coming weeks.**
+
 ## Installation
 
+**This package is not yet published on PyPI.**
+
+But you can still install it from GitHub.
+
 ```bash
-pip install omegaconf-extra-resolvers
+# With pip
+pip install git+https://github.com/rmpIGN/omegaconf-extra-resolvers.git
+
+# With uv
+uv add "omegaconf-extra-resolvers @ git+https://github.com/rmpIGN/omegaconf-extra-resolvers.git"
 ```
 
 ## Usage
@@ -30,11 +40,11 @@ oc_register_extra_resolvers(resolvers=[ResolverEnum.PATH, ResolverEnum.LEN])
 
 | Resolver | Signature | Description |
 |---|---|---|
-| `path` | `path: str, check_exist: bool = false` | Converts a string to a `pathlib.Path`. Optionally raises `FileNotFoundError` if the path does not exist. |
+| `path` | `path: str, check_exist: bool = False` | Converts a string to a `pathlib.Path`. Optionally raises `FileNotFoundError` if the path does not exist. |
 | `pad` | `value, pad_value, new_length: int, where: str = "right"` | Pads a list to `new_length` with `pad_value`. `where` accepts `"left"` or `"right"`. |
 | `lpad` | `value, pad_value, new_length: int` | Shorthand for left-padding a list (equivalent to `pad` with `where="left"`). |
 | `rpad` | `value, pad_value, new_length: int` | Shorthand for right-padding a list (equivalent to `pad` with `where="right"`). |
-| `len` | `value` | Returns the length of a sequence. Raises `ValueError` if the value has no `__len__`. |
+| `len` | `value` | Returns the length of any sized object. Raises `ValueError` if the value has no `__len__`. |
 | `coalesce` | `arr` | Returns the first non-`null` item from a list. Raises `ValueError` if all items are `null`. |
 
 ### Examples
