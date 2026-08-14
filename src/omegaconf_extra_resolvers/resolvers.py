@@ -7,6 +7,9 @@ from typing import Any
 from typing import Iterable
 from typing import Literal
 
+from omegaconf import ListConfig
+from omegaconf import OmegaConf
+
 
 def oc_str2path(value: str, check_exist: bool = False) -> Path:
     """Convert a string value to a path.
@@ -35,11 +38,11 @@ def oc_str2path(value: str, check_exist: bool = False) -> Path:
 
 
 def oc_pad(
-    value,
-    pad_value,
+    value: Any,
+    pad_value: Any,
     new_length: int,
     where: Literal["left", "right"] = "right",
-) -> list[Any]:
+) -> ListConfig:
     """Pad a sequence-like value to a target length.
 
     Parameters
@@ -66,7 +69,7 @@ def oc_pad(
         padded_list = padded_list + list(value)
     else:
         padded_list = list(value) + padded_list
-    return padded_list
+    return OmegaConf.create(padded_list)
 
 
 def oc_lpad(value: Any, pad_value: Any, new_length: int) -> list[Any]:
