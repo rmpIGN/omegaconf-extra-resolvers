@@ -27,7 +27,9 @@ class ResolverEnum(Enum):
     COALESCE = ("coalesce", oc_coalesce)
 
 
-def register(resolvers: list[ResolverEnum] | None = None, replace: bool = False):
+def oc_register_extra_resolvers(
+    resolvers: list[ResolverEnum] | None = None, replace: bool = False
+):
     """Register extra resolvers in OmegaConf.
 
     Parameters
