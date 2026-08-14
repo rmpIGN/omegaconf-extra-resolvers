@@ -35,8 +35,8 @@ def oc_str2path(value: str, check_exist: bool = False) -> Path:
 
 
 def oc_pad(
-    value: Any,
-    pad_value: Any,
+    value,
+    pad_value,
     new_length: int,
     where: Literal["left", "right"] = "right",
 ) -> list[Any]:
