@@ -1,40 +1,9 @@
-"""Additional resolver helpers for OmegaConf configurations."""
-
-from errno import ENOENT
-from os import strerror
-from pathlib import Path
 from typing import Any
 from typing import Iterable
 from typing import Literal
 
 from omegaconf import ListConfig
 from omegaconf import OmegaConf
-
-
-def oc_str2path(value: str, check_exist: bool = False) -> Path:
-    """Convert a string value to a path.
-
-    Parameters
-    ----------
-    value : str
-        String representation of the path.
-    check_exist : bool, optional
-        Whether to require the path to exist before returning it.
-
-    Returns
-    -------
-    pathlib.Path
-        Path built from ``value``.
-
-    Raises
-    ------
-    FileNotFoundError
-        If ``check_exist`` is ``True`` and the path does not exist.
-    """
-    p = Path(value)
-    if check_exist and not p.exists():
-        raise FileNotFoundError(ENOENT, strerror(ENOENT), p)
-    return p
 
 
 def oc_pad(
@@ -162,3 +131,24 @@ def oc_coalesce(arr: Iterable) -> Any:
         return first
     except StopIteration:
         raise ValueError(f"All items of {arr} are None.")
+
+
+def oc_range(start: int, stop: int, step: int = 1) -> ListConfig:
+    """Build a list of evenly spaced integers, mirroring :pyfunc:`range`.
+
+    Parameters
+    ----------
+    start : int
+        Start of the sequence (inclusive).
+    stop : int
+        End of the sequence (exclusive).
+    step : int, optional
+        Increment between consecutive values.
+
+    Returns
+    -------
+    ListConfig
+        OmegaConf list of integers from ``start`` to ``stop`` (exclusive)
+        by ``step``.
+    """
+    return OmegaConf.create(list(range(start, stop, step)))
