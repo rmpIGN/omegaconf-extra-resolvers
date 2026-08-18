@@ -40,58 +40,28 @@ oc_register_extra_resolvers(resolvers=[ResolverEnum.PATH, ResolverEnum.LEN])
 
 ### OS (`resolvers.os`)
 
-| Resolver | Signature | Description |
+| Resolver | Description | Example |
 |---|---|---|
-| `path` | `path: str, check_exist: bool = False` | Converts a string to a `pathlib.Path`. Optionally raises `FileNotFoundError` if the path does not exist. |
-| `glob` | `path: str, pattern: str` | Returns files matching a glob pattern under `path` as a list of path strings. Raises `FileNotFoundError` if `path` does not exist. |
+| `path` | Converts a string to a `pathlib.Path`. Optionally raises `FileNotFoundError` if the path does not exist. | `${path:/data/raw}` → `Path("/data/raw")` |
+| `glob` | Returns files matching a glob pattern under `path` as a list of path strings. Raises `FileNotFoundError` if `path` does not exist. | `${glob:/data/raw,*.tif}` → `["/data/raw/a.tif", …]` |
 
 ### List (`resolvers.list`)
 
-| Resolver | Signature | Description |
+| Resolver | Description | Example |
 |---|---|---|
-| `pad` | `value, pad_value, new_length: int, where: str = "right"` | Pads a list to `new_length` with `pad_value`. `where` accepts `"left"` or `"right"`. |
-| `lpad` | `value, pad_value, new_length: int` | Shorthand for left-padding a list (equivalent to `pad` with `where="left"`). |
-| `rpad` | `value, pad_value, new_length: int` | Shorthand for right-padding a list (equivalent to `pad` with `where="right"`). |
-| `len` | `value` | Returns the length of any sized object. Raises `ValueError` if the value has no `__len__`. |
-| `coalesce` | `arr` | Returns the first non-`null` item from a list. Raises `ValueError` if all items are `null`. |
-| `range` | `start: int, stop: int, step: int = 1` | Returns a list of evenly spaced integers, mirroring Python's built-in `range`. |
+| `pad` | Pads a list to `new_length` with `pad_value`. `where` accepts `"left"` or `"right"` (default). | `${pad:[1,2],0,5}` → `[1, 2, 0, 0, 0]` |
+| `lpad` | Shorthand for left-padding a list. | `${lpad:[7,8],0,4}` → `[0, 0, 7, 8]` |
+| `rpad` | Shorthand for right-padding a list. | `${rpad:[1,2,3],0,5}` → `[1, 2, 3, 0, 0]` |
+| `len` | Returns the length of any sized object. Raises `ValueError` if the value has no `__len__`. | `${len:${items}}` → `3` |
+| `coalesce` | Returns the first non-`null` item from a list. Raises `ValueError` if all items are `null`. | `${coalesce:[null, null, resnet50]}` → `resnet50` |
+| `range` | Returns a list of evenly spaced integers, mirroring Python's built-in `range`. | `${range:0,10,2}` → `[0, 2, 4, 6, 8]` |
 
 ### String (`resolvers.string`)
 
-| Resolver | Signature | Description |
+| Resolver | Description | Example |
 |---|---|---|
-| `upper` | `s: str` | Returns `s` converted to upper-case. |
-| `lower` | `s: str` | Returns `s` converted to lower-case. |
-
-### Examples
-
-```yaml
-data_dir: /data/raw
-# Convert a string key to a Path
-data_path: ${path:${data_dir}}
-
-# List all TIFF files in a directory
-tif_files: ${glob:${data_dir},*.tif}
-
-# Pad a list to length 5 with zeros on the right
-padded: ${rpad:[1,2,3],0,5}   # [1, 2, 3, 0, 0]
-
-# Left-pad to length 4
-lpadded: ${lpad:[7,8],0,4}    # [0, 0, 7, 8]
-
-# Length of a list
-n_items: ${len:${padded}}     # 5
-
-# First non-null value
-active_model: ${coalesce:[null, null, resnet50]}  # resnet50
-
-# Generate a list of epoch indices
-epochs: ${range:0,10,2}       # [0, 2, 4, 6, 8]
-
-# Normalise a model name
-model_upper: ${upper:resnet50}  # RESNET50
-env_tag: ${lower:PRODUCTION}    # production
-```
+| `upper` | Returns the string converted to upper-case. | `${upper:resnet50}` → `RESNET50` |
+| `lower` | Returns the string converted to lower-case. | `${lower:PRODUCTION}` → `production` |
 
 ## Requirements
 
