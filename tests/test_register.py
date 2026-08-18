@@ -17,7 +17,18 @@ def registered():
 class TestRegisterAll:
     def test_all_resolvers_by_default(self):
         registered_names = {r.value[0] for r in ResolverEnum}
-        assert registered_names == {"pad", "lpad", "rpad", "path", "len", "coalesce"}
+        assert registered_names == {
+            "pad",
+            "lpad",
+            "rpad",
+            "path",
+            "len",
+            "coalesce",
+            "range",
+            "glob",
+            "upper",
+            "lower",
+        }
 
     def test_path_resolver(self):
         cfg = OmegaConf.create({"p": "${path:/some/path}"})
@@ -44,6 +55,23 @@ class TestRegisterAll:
             {"items": [None, None, "hello"], "result": "${coalesce:${items}}"}
         )
         assert cfg.result == "hello"
+
+    def test_range_resolver(self):
+        cfg = OmegaConf.create({"epochs": "${range:0,6,2}"})
+        assert list(cfg.epochs) == [0, 2, 4]
+
+    def test_glob_resolver(self, tmp_path):
+        (tmp_path / "img.tif").touch()
+        cfg = OmegaConf.create({"files": "${glob:" + str(tmp_path) + ",*.tif}"})
+        assert list(cfg.files) == [str(tmp_path / "img.tif")]
+
+    def test_upper_resolver(self):
+        cfg = OmegaConf.create({"tag": "${upper:resnet50}"})
+        assert cfg.tag == "RESNET50"
+
+    def test_lower_resolver(self):
+        cfg = OmegaConf.create({"env": "${lower:PRODUCTION}"})
+        assert cfg.env == "production"
 
 
 class TestRegisterSubset:

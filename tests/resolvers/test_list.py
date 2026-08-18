@@ -1,48 +1,14 @@
-"""Unit tests for resolver functions (direct calls, no OmegaConf registration)."""
-
-from pathlib import Path
+"""Unit tests for resolvers.list (direct calls, no OmegaConf registration)."""
 
 import pytest
 from omegaconf import ListConfig
 
-from omegaconf_extra_resolvers.resolvers import oc_coalesce
-from omegaconf_extra_resolvers.resolvers import oc_len
-from omegaconf_extra_resolvers.resolvers import oc_lpad
-from omegaconf_extra_resolvers.resolvers import oc_pad
-from omegaconf_extra_resolvers.resolvers import oc_rpad
-from omegaconf_extra_resolvers.resolvers import oc_str2path
-
-
-class TestStr2Path:
-    def test_absolute_path(self):
-        assert oc_str2path("/some/path") == Path("/some/path")
-
-    def test_relative_path(self):
-        assert oc_str2path("relative/path") == Path("relative/path")
-
-    def test_returns_path_instance(self):
-        assert isinstance(oc_str2path("/foo"), Path)
-
-    def test_check_exist_true_existing_file(self, tmp_path):
-        f = tmp_path / "file.txt"
-        f.touch()
-        assert oc_str2path(str(f), check_exist=True) == f
-
-    def test_check_exist_true_existing_dir(self, tmp_path):
-        assert oc_str2path(str(tmp_path), check_exist=True) == tmp_path
-
-    def test_check_exist_true_missing_raises(self, tmp_path):
-        missing = tmp_path / "missing.txt"
-        with pytest.raises(FileNotFoundError):
-            oc_str2path(str(missing), check_exist=True)
-
-    def test_check_exist_false_missing_ok(self, tmp_path):
-        missing = tmp_path / "missing.txt"
-        assert oc_str2path(str(missing), check_exist=False) == missing
-
-    def test_check_exist_defaults_to_false(self, tmp_path):
-        missing = tmp_path / "missing.txt"
-        assert oc_str2path(str(missing)) == missing
+from omegaconf_extra_resolvers.resolvers.list import oc_coalesce
+from omegaconf_extra_resolvers.resolvers.list import oc_len
+from omegaconf_extra_resolvers.resolvers.list import oc_lpad
+from omegaconf_extra_resolvers.resolvers.list import oc_pad
+from omegaconf_extra_resolvers.resolvers.list import oc_range
+from omegaconf_extra_resolvers.resolvers.list import oc_rpad
 
 
 class TestPad:
@@ -136,3 +102,20 @@ class TestCoalesce:
     def test_not_iterable_raises(self):
         with pytest.raises(ValueError, match="not iterable"):
             oc_coalesce(42)
+
+
+class TestRange:
+    def test_basic(self):
+        assert list(oc_range(0, 5)) == [0, 1, 2, 3, 4]
+
+    def test_with_step(self):
+        assert list(oc_range(0, 10, 2)) == [0, 2, 4, 6, 8]
+
+    def test_with_start_offset(self):
+        assert list(oc_range(2, 6)) == [2, 3, 4, 5]
+
+    def test_empty_range(self):
+        assert list(oc_range(5, 5)) == []
+
+    def test_returns_list_config(self):
+        assert isinstance(oc_range(0, 3), ListConfig)
