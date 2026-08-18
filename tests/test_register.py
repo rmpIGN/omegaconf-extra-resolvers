@@ -92,3 +92,19 @@ class TestRegisterSubset:
         oc_register_extra_resolvers([ResolverEnum.LEN], replace=True)
         with pytest.raises(Exception):
             oc_register_extra_resolvers([ResolverEnum.LEN], replace=False)
+
+
+class TestWithConfigFiles:
+    def test_list_resolvers(self, list_cfg):
+        assert list(list_cfg.padded_right) == [1, 2, 3, 0, 0]
+        assert list(list_cfg.padded_left) == [0, 0, 1, 2, 3]
+        assert list_cfg.n_items == 3
+        assert list_cfg.first_non_null == "found"
+        assert list(list_cfg.epochs) == [0, 2, 4]
+
+    def test_os_resolvers(self, os_cfg):
+        assert os_cfg.data_path == Path("/tmp")
+
+    def test_string_resolvers(self, string_cfg):
+        assert string_cfg.model_upper == "RESNET50"
+        assert string_cfg.env_lower == "production"

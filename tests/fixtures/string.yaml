@@ -1,0 +1,4 @@
+model: resnet50
+model_upper: ${upper:${model}}
+env: PRODUCTION
+env_lower: ${lower:${env}}
